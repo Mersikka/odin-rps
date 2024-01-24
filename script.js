@@ -9,12 +9,29 @@ function getComputerChoice() {
     return compSel
 };
 
+function getPlayerChoice() {
+    let playerInput;
+    playerInput = prompt("Choose what to play? (Rock, Paper or Scissors): ", "");
+    if (playerInput === null) {
+        playerInput = ""
+    }
+    let playerChoice = playerInput.charAt(0).toUpperCase() + playerInput.slice(1).toLowerCase();
+    const options = ["Rock", "Paper", "Scissors"];
+
+    if (options.indexOf(playerChoice) !== -1) {
+        return playerChoice
+    }
+    
+    console.log("Please enter a valid choice: ");
+    return getPlayerChoice();
+}
+
 function getWinner(plr, comp) {
     let winner;
     // 0 = Tie, 1 = Player wins, 2 = Computer wins
     if (plr === comp) {
         winner = 0
-    } else if ((plr === "Rock" && comp === "Scissors") | (plr === "Paper" && comp === "Rock") | (plr === "Scissors" && comp === "Paper")) {
+    } else if ((plr === "Rock" && comp === "Scissors") || (plr === "Paper" && comp === "Rock") || (plr === "Scissors" && comp === "Paper")) {
         winner = 1
     } else {
         winner = 2
@@ -25,21 +42,38 @@ function getWinner(plr, comp) {
 
 function playRound() {
     const computerChoice = getComputerChoice();
-    const playerChoice = "rock";
+    const playerChoice = getPlayerChoice()
+    const tieWinLose = getWinner(playerChoice, computerChoice);
+    return { tieWinLose, playerChoice, computerChoice };
+}
 
-    const plrSel = playerChoice.charAt(0).toUpperCase() + playerChoice.slice(1).toLowerCase(); 
-    const tieWinLose = getWinner(plrSel, computerChoice);
+function getOutput(winner, plrSel, compSel) {
+    let resultMessage;
 
-    if (tieWinLose == 0) {
-        console.log("You have tied. Replaying...");
-        playRound();
-    } else if (tieWinLose == 1) {
-        console.log(`You Win! ${plrSel} beats ${computerChoice}`)
-    } else if (tieWinLose == 2) {
-        console.log(`You Lose! ${computerChoice} beats ${plrSel}`)
+    if (winner == 0) {
+        resultMessage = "You have tied. Replaying..."
+    } else if (winner == 1) {
+        resultMessage = `You Win! ${plrSel} beats ${compSel}`
     } else {
-        console.error("Something went wrong with playRound")
+        resultMessage = `You Lose! ${compSel} beats ${plrSel}`
+    }
+
+    return resultMessage
+}
+
+function game() {
+    for (let i = 0; i < 5; i++) {
+        let playRoundValues = playRound();
+        let winner = playRoundValues.tieWinLose;
+        let plrSel = playRoundValues.playerChoice;
+        let compSel = playRoundValues.computerChoice
+
+        console.log(getOutput(winner, plrSel, compSel))
+        // play again if draw
+        if (winner == 0) {
+            i--
+        }
     }
 }
 
-console.log(playRound())
+game()
