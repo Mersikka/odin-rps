@@ -61,6 +61,9 @@ function getOutput(winner, plrSel, compSel) {
     return resultMessage
 }
 
+let plrWinAmount = 0;
+let compWinAmount = 0;
+
 function game() {
     for (let i = 0; i < 5; i++) {
         let playRoundValues = playRound();
@@ -69,11 +72,24 @@ function game() {
         let compSel = playRoundValues.computerChoice
 
         console.log(getOutput(winner, plrSel, compSel))
-        // play again if draw
-        if (winner == 0) {
-            i--
+
+        // code for the Bo5 behaviour
+
+        if (plrWinAmount == 3 || compWinAmount == 3) {
+            if (plrWinAmount == 3) {
+                console.log(`You have won the set ${plrWinAmount} - ${compWinAmount}!`)
+            } else {
+                console.log(`You have lost to the computer ${plrWinAmount} - ${compWinAmount}.`)
+            }
+            break
+        } else if (winner == 1) {
+            plrWinAmount++
+        } else if (winner == 2) {
+            compWinAmount++
+        } else if (winner == 0) {
+            i-- // play again when tied
         }
     }
 }
 
-game()
+//game()
